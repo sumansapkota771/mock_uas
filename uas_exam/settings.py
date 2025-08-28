@@ -14,10 +14,10 @@ SECRET_KEY = 'django-insecure-your-secret-key-change-in-production'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['www.mockuas.com', '127.0.0.1']
+ALLOWED_HOSTS = ['www.mockuas.com', '127.0.0.1','localhost']
 # Application definition
 INSTALLED_APPS = [
-    'jazzmin',  # Added jazzmin before django.contrib.admin
+      # Added jazzmin before django.contrib.admin
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
