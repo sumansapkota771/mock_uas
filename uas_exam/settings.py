@@ -14,7 +14,7 @@ SECRET_KEY = 'django-insecure-your-secret-key-change-in-production'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['www.mockuas.com', '127.0.0.1','localhost']
+ALLOWED_HOSTS = ['www.mockuas.com', '127.0.0.1','localhost','https://mock-uas.vercel.app/']
 # Application definition
 INSTALLED_APPS = [
       # Added jazzmin before django.contrib.admin
