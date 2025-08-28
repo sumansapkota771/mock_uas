@@ -1,0 +1,412 @@
+
+
+/* Updated CSS for white background and black text theme */
+:root {
+  --primary-color: #ffffff;
+  --secondary-color: #dc3545;
+  --dark-bg: #ffffff;
+  --light-text: #000000;
+  --muted-text: #6c757d;
+}
+
+/* Remove all margins, padding, and ensure full width white background */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--primary-color);
+  color: var(--light-text);
+}
+
+/* Ensure containers take full width without side margins */
+.container-fluid {
+  padding-left: 0;
+  padding-right: 0;
+  margin-left: 0;
+  margin-right: 0;
+  max-width: 100%;
+  width: 100%;
+}
+
+/* Updated navigation for white background */
+.navbar {
+  background-color: #ffffff !important;
+  border-bottom: 2px solid #e0e0e0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand .logo-placeholder {
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: var(--secondary-color);
+}
+
+.navbar-nav .nav-link {
+  color: var(--light-text) !important;
+  font-weight: 500;
+}
+
+.navbar-nav .nav-link:hover {
+  color: var(--secondary-color) !important;
+}
+
+/* Hero Section with white background */
+.hero-section {
+  background: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.exam-info-card {
+  background: #ffffff;
+  border-radius: 15px;
+  padding: 2rem;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.exam-info-card:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  border-color: var(--secondary-color);
+}
+
+.section-card {
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+  border: 1px solid #e0e0e0;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.section-card:hover {
+  transform: translateY(-5px);
+  background: rgba(220, 53, 69, 0.05);
+  border-color: var(--secondary-color);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.section-card h5 {
+  color: var(--light-text);
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.section-card p {
+  color: var(--secondary-color);
+  margin: 0;
+  font-weight: bold;
+}
+
+/* Features Section with white background */
+.features-section {
+  background-color: #ffffff;
+  padding: 4rem 0;
+}
+
+.feature-card {
+  background: #ffffff;
+  border-radius: 15px;
+  padding: 2rem;
+  height: 100%;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+  border-color: var(--secondary-color);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.feature-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  color: var(--secondary-color);
+}
+
+.feature-card h4 {
+  color: var(--light-text);
+  margin-bottom: 1rem;
+}
+
+.feature-card p {
+  color: var(--muted-text);
+}
+
+/* Buttons */
+.btn-danger {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+  font-weight: bold;
+  padding: 0.75rem 2rem;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+  border-color: #c82333;
+}
+
+.btn-outline-dark {
+  border-width: 2px;
+  font-weight: bold;
+  padding: 0.75rem 2rem;
+  color: var(--light-text);
+  border-color: var(--light-text);
+}
+
+.btn-outline-dark:hover {
+  background-color: var(--light-text);
+  color: #ffffff;
+}
+
+.btn-outline-light {
+  border-width: 2px;
+  font-weight: bold;
+  padding: 0.75rem 2rem;
+  color: var(--light-text);
+  border-color: #e0e0e0;
+}
+
+.btn-outline-light:hover {
+  background-color: #f8f9fa;
+  color: var(--light-text);
+  border-color: var(--secondary-color);
+}
+
+/* Forms */
+.form-control {
+  background-color: #ffffff;
+  border: 1px solid #ced4da;
+  color: var(--light-text);
+}
+
+.form-control:focus {
+  background-color: #ffffff;
+  border-color: var(--secondary-color);
+  color: var(--light-text);
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.form-control::placeholder {
+  color: var(--muted-text);
+}
+
+/* Cards with white background */
+.card {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  color: var(--light-text);
+}
+
+.card-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #e0e0e0;
+  color: var(--light-text);
+}
+
+/* Exam specific styles with white backgrounds */
+.exam-timer {
+  background-color: var(--secondary-color);
+  color: white;
+  padding: 1rem;
+  border-radius: 10px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.question-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.option-button {
+  background: #ffffff;
+  border: 2px solid #e0e0e0;
+  color: var(--light-text);
+  padding: 1rem;
+  margin: 0.5rem 0;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+
+.option-button:hover {
+  border-color: var(--secondary-color);
+  background: rgba(220, 53, 69, 0.05);
+}
+
+.option-button.selected {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+  color: white;
+}
+
+/* Footer with white background */
+footer {
+  background-color: #ffffff !important;
+  border-top: 2px solid #e0e0e0;
+  color: var(--light-text);
+  box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  margin: 0;
+}
+
+footer p {
+  color: var(--light-text);
+}
+
+footer .text-muted {
+  color: var(--muted-text) !important;
+}
+
+/* Ensure all main content areas have full width white background */
+.hero-section,
+.features-section,
+.profile-section,
+.exam-section,
+.auth-section,
+main,
+.main-content,
+.content-wrapper {
+  background-color: #ffffff;
+  width: 100%;
+  margin: 0;
+}
+
+.container,
+.container-fluid {
+  background-color: #ffffff;
+}
+
+/* Profile and other pages */
+.profile-section,
+.exam-section {
+  background-color: #ffffff;
+  min-height: 100vh;
+}
+
+/* Auth Section with white background */
+.auth-section {
+  background: #ffffff !important;
+  min-height: 100vh;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.auth-card {
+  background: #ffffff;
+  border-radius: 15px;
+  padding: 2.5rem;
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.auth-form .form-control {
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #ffffff;
+  border: 1px solid #ced4da;
+  color: var(--light-text);
+}
+
+.auth-form .form-control:focus {
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+  border-color: var(--secondary-color);
+  background-color: #ffffff;
+}
+
+.form-text {
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+  color: var(--muted-text);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-section {
+    padding: 2rem 0;
+  }
+
+  .exam-info-card {
+    margin-top: 2rem;
+  }
+
+  .display-4 {
+    font-size: 2rem;
+  }
+}
+
+/* Alert customization */
+.alert-success {
+  background-color: rgba(40, 167, 69, 0.1);
+  border-color: #28a745;
+  color: #155724;
+}
+
+.alert-danger {
+  background-color: rgba(220, 53, 69, 0.1);
+  border-color: var(--secondary-color);
+  color: #721c24;
+}
+
+.alert-info {
+  background-color: rgba(23, 162, 184, 0.1);
+  border-color: #17a2b8;
+  color: #0c5460;
+}
+
+/* Text colors */
+.text-dark {
+  color: var(--light-text) !important;
+}
+
+.text-muted {
+  color: var(--muted-text) !important;
+}
+
+/* Tables */
+.table {
+  background-color: #ffffff;
+  color: var(--light-text);
+}
+
+.table th {
+  border-top: none;
+  color: var(--light-text);
+}
+
+.table td {
+  color: var(--light-text);
+}

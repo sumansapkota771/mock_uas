@@ -1,0 +1,517 @@
+
+
+
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Taking Exam - UAS Mock Exam System{% endblock %}
+
+{% block content %}
+<div class="exam-interface" data-exam-id="{{ exam.id }}">
+    <!-- Exam Header -->
+    <div class="exam-header">
+        <div class="container-fluid">
+            <div class="row align-items-center">
+                <div class="col-md-3">
+                    <div class="exam-title">
+                        <h4 class="text-dark mb-0">{{ exam.name }}</h4>
+                        <small class="text-dark">{{ current_section.display_name }}</small>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="exam-timer" id="examTimer">
+                        <div class="timer-label">Time Remaining</div>
+                        <div class="timer-display" id="timerDisplay">25:00</div>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center">
+                    <div class="exam-progress">
+                        <span class="text-dark">Question <span id="currentQuestion">1</span> of <span id="totalQuestions">20</span></span>
+                        <div class="progress mt-1">
+                            <div class="progress-bar bg-danger" id="progressBar" style="width: 5%"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 text-end">
+                    <!-- Added auto-save indicator -->
+                    <div class="auto-save-status">
+                        <div id="autoSaveIndicator" class="auto-save-indicator"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Exam Content -->
+    <div class="exam-content">
+        <div class="container-fluid">
+            <form id="examForm" method="post">
+                {% csrf_token %}
+                
+                <!-- Question Display -->
+                <div class="question-container">
+                    <div class="question-card">
+                        <div class="question-header">
+                            <div class="question-number">Question <span id="questionNumber">1</span></div>
+                            <div class="question-points">
+                                <span class="badge bg-success">+1 point</span>
+                                <span class="badge bg-danger">-0.25 points</span>
+                            </div>
+                        </div>
+                        
+                        <div class="question-text" id="questionText">
+                            <div class="loading-spinner text-center py-4">
+                                <i class="fas fa-spinner fa-spin fa-2x text-danger"></i>
+                                <p class="text-muted mt-2">Loading questions...</p>
+                            </div>
+                        </div>
+                        
+                        <div class="question-options" id="questionOptions">
+                            <!-- Options will be loaded here via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Navigation Controls -->
+                <div class="exam-controls">
+                    <div class="row align-items-center">
+                        <div class="col-md-4">
+                            <div class="control-buttons">
+                                <button type="button" class="btn btn-outline-secondary" id="prevBtn" disabled>
+                                    <i class="fas fa-arrow-left me-2"></i>Previous
+                                </button>
+                                <button type="button" class="btn btn-outline-secondary" id="nextBtn">
+                                    Next<i class="fas fa-arrow-right ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-4 text-center">
+                            <button type="button" class="btn btn-warning" id="clearBtn">
+                                <i class="fas fa-eraser me-2"></i>Clear Answer
+                            </button>
+                        </div>
+                        
+                        <div class="col-md-4 text-end">
+                            <button type="button" class="btn btn-danger" id="submitSectionBtn">
+                                <i class="fas fa-check me-2"></i>Submit Section
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Question Navigator Sidebar -->
+    <div class="question-navigator" id="questionNavigator">
+        <div class="navigator-header">
+            <h5 class="text-dark mb-0">Questions</h5>
+            <button type="button" class="btn-close" id="closeNavigator"></button>
+        </div>
+        <div class="navigator-body">
+            <div class="question-grid" id="questionGrid">
+                <!-- Question numbers will be populated here -->
+            </div>
+            <div class="navigator-legend">
+                <div class="legend-item">
+                    <div class="legend-color answered"></div>
+                    <span>Answered</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color current"></div>
+                    <span>Current</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color unanswered"></div>
+                    <span>Unanswered</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toggle Navigator Button -->
+    <button type="button" class="btn btn-danger navigator-toggle" id="toggleNavigator">
+        <i class="fas fa-list"></i>
+    </button>
+</div>
+
+<!-- Submit Confirmation Modal -->
+<div class="modal fade" id="submitModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-white">
+            <div class="modal-header border-danger">
+                <h5 class="modal-title text-dark">Submit Section</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p class="text-dark">Are you sure you want to submit this section?</p>
+                <div class="alert alert-warning">
+                    <strong>Warning:</strong> Once submitted, you cannot return to this section.
+                </div>
+                <div id="submissionSummary" class="text-muted">
+                    <!-- Summary will be populated here -->
+                </div>
+            </div>
+            <div class="modal-footer border-danger">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmSubmit">Submit Section</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Added session recovery modal -->
+<div class="modal fade" id="sessionRecoveryModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content bg-white">
+            <div class="modal-header border-warning">
+                <h5 class="modal-title text-dark">
+                    <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+                    Session Recovery
+                </h5>
+            </div>
+            <div class="modal-body">
+                <p class="text-dark">We found an interrupted exam session. Would you like to continue from where you left off?</p>
+                <div id="sessionRecoveryDetails" class="alert alert-info">
+                    <!-- Recovery details will be populated here -->
+                </div>
+            </div>
+            <div class="modal-footer border-warning">
+                <button type="button" class="btn btn-outline-secondary" id="startNewSession">Start New</button>
+                <button type="button" class="btn btn-warning" id="recoverSession">Continue Session</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<style>
+body {
+    overflow-x: hidden;
+}
+
+.exam-interface {
+    background: #ffffff;
+    min-height: 90vh;
+}
+
+.exam-header {
+    background: #ffffff;
+    border-bottom: 2px solid #dc3545;
+    padding: 10px;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.exam-timer {
+    background: rgba(220, 53, 69, 0.1);
+    border: 2px solid #dc3545;
+    border-radius: 10px;
+    padding: 0.75rem;
+    text-align: center;
+}
+
+.timer-label {
+    color: #333333;
+    font-size: 0.8rem;
+    margin-bottom: 0.25rem;
+}
+
+.timer-display {
+    color: #dc3545;
+    font-size: 1.5rem;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+}
+
+/* Added auto-save indicator styles */
+.auto-save-indicator {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.auto-save-indicator.saving {
+    background: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+    border: 1px solid #ffc107;
+}
+
+.auto-save-indicator.saved {
+    background: rgba(40, 167, 69, 0.2);
+    color: #28a745;
+    border: 1px solid #28a745;
+}
+
+.auto-save-indicator.error {
+    background: rgba(220, 53, 69, 0.2);
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+.exam-content {
+    padding: 2rem 0;
+    min-height: calc(100vh - 200px);
+}
+
+.question-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.question-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.question-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.question-number {
+    color: #dc3545;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.question-points .badge {
+    margin-left: 0.5rem;
+}
+
+.question-text {
+    color: #333333;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.question-options {
+    display: grid;
+    gap: 0.4rem;
+}
+
+.option-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: #333333;
+    border-radius: 10px;
+    text-align: left;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 0.6rem 1rem;   /* reduce padding inside option box */
+    font-size: 1rem;   
+}
+
+.option-button:hover {
+    border-color: #dc3545;
+    background: rgba(220, 53, 69, 0.2);
+}
+
+.option-button.selected {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+.option-letter {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    font-weight: bold;
+}
+
+.option-button.selected .option-letter {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.exam-controls {
+    background: #ffffff;
+    border-top: 1px solid #dee2e6;
+    padding: 1rem 0;
+    position: sticky;
+    bottom: 0;
+    box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+}
+
+.question-navigator {
+    position: fixed;
+    top: 0;
+    right: -350px;
+    width: 350px;
+    height: 100vh;
+    background: #ffffff;
+    border-left: 2px solid #dc3545;
+    transition: right 0.3s ease;
+    z-index: 1001;
+    box-shadow: -2px 0 4px rgba(0,0,0,0.1);
+    overflow-y: auto;
+}
+
+.question-navigator.open {
+    right: 0;
+}
+
+.navigator-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.navigator-body {
+    padding: 1rem;
+}
+
+.question-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.question-grid-item {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.question-grid-item.answered {
+    background: #28a745;
+    color: white;
+}
+
+.question-grid-item.current {
+    background: #dc3545;
+    color: white;
+}
+
+.question-grid-item.unanswered {
+    background: rgba(255, 255, 255, 0.2);
+    color: #333333;
+}
+
+.navigator-legend {
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    padding-top: 1rem;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    color: #333333;
+    font-size: 0.9rem;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 4px;
+    margin-right: 0.75rem;
+}
+
+.legend-color.answered {
+    background: #28a745;
+}
+
+.legend-color.current {
+    background: #dc3545;
+}
+
+.legend-color.unanswered {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.navigator-toggle {
+    position: fixed;
+    top: 50%;
+    right: 20px;
+    transform: translateY(-50%);
+    z-index: 1000;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+}
+
+/* Added exam in progress body class styles */
+body.exam-in-progress {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+body.exam-in-progress::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.1);
+    z-index: -1;
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    .exam-header .row > div {
+        margin-bottom: 1rem;
+    }
+    
+    .exam-header .col-md-3 {
+        text-align: center !important;
+    }
+    
+    .exam-controls .row > div {
+        margin-bottom: 1rem;
+        text-align: center !important;
+    }
+    
+    .question-navigator {
+        width: 100%;
+        right: -100%;
+    }
+    
+    .control-buttons .btn {
+        display: block;
+        width: 90%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .auto-save-indicator {
+        text-align: center;
+        margin-top: 0.5rem;
+    }
+}
+</style>
+
+<script src="{% static 'js/exam.js' %}"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}

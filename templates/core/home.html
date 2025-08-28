@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - UAS Mock Exam System{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <div class="row align-items-center min-vh-100">
+            <div class="col-lg-6">
+                <h1 class="display-4 fw-bold text-black mb-4">
+                    International UAS Exam
+                    <span class="text-danger">Mock Test System</span>
+                </h1>
+                <p class="lead text-black mb-4">
+                    Prepare for your International UAS entrance exam with our comprehensive mock test platform. 
+                    Practice with realistic exam conditions and improve your chances of success.
+                </p>
+                
+                {% if not user.is_authenticated %}
+                <div class="d-flex gap-3">
+                    <!-- <a href="{% url 'accounts:signup' %}" class="btn btn-danger btn-lg">Get Started</a> -->
+                    <a href="{% url 'accounts:login' %}" class="btn btn-outline-light btn-lg">Login</a>
+                </div>
+                {% else %}
+                <div class="d-flex gap-3">
+                    <a href="{% url 'exams:exam_list' %}" class="btn btn-danger btn-lg">Take Mock Exam</a>
+                    <a href="{% url 'exams:instructions' %}" class="btn btn-outline-light btn-lg">Instructions</a>
+                </div>
+                {% endif %}
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="exam-info-card">
+                    <h3 class="text-black mb-4">Exam Sections</h3>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="section-card">
+                                <h5>Reasoning Skills</h5>
+                                <p class="small">25 minutes</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="section-card">
+                                <h5>English Language</h5>
+                                <p class="small">20 minutes</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="section-card">
+                                <h5>Mathematical Skills</h5>
+                                <p class="small">25 minutes</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="section-card">
+                                <h5>Advanced Math</h5>
+                                <p class="small">30 minutes</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="section-card">
+                                <h5>Ethical Skills</h5>
+                                <p class="small">10 minutes</p>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="section-card">
+                                <h5>Emotional Intelligence</h5>
+                                <p class="small">10 minutes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="features-section py-5">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col-lg-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">⏱️</div>
+                    <h4>Timed Practice</h4>
+                    <p>Experience real exam conditions with section-specific time limits and automatic submission.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h4>Detailed Results</h4>
+                    <p>Get comprehensive feedback on your performance with section-wise scoring and analysis.</p>
+                </div>
+            </div>
+            <div class="col-lg-4 mb-4">
+                <div class="feature-card">
+                    <div class="feature-icon">🎯</div>
+                    <h4>Realistic Questions</h4>
+                    <p>Practice with questions that mirror the actual International UAS exam format and difficulty.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+

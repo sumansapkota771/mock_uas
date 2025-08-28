@@ -1,0 +1,375 @@
+{% extends 'base.html' %}
+
+{% block title %}Exam Results - UAS Mock Exam System{% endblock %}
+
+{% block content %}
+<div class="results-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="results-card">
+                    <div class="results-header text-center">
+                        <div class="result-icon mb-3">
+                            <i class="fas fa-chart-line text-success"></i>
+                        </div>
+                        <h1 class="text-black mb-2">Exam Results</h1>
+                        <h3 class="text-danger mb-3">{{ exam.name }}</h3>
+                        <p class="text-muted">{{ exam_attempt.end_time|date:"F d, Y - H:i" }}</p>
+                    </div>
+                    
+                    <div class="results-content">
+                        <!-- Overall Score -->
+                        <div class="overall-score-section mb-4">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="score-card total-score">
+                                        <div class="score-label">Total Score</div>
+                                        <div class="score-value">{{ exam_attempt.total_score|floatformat:1 }}/{{ max_total_score }}</div>
+                                        <div class="score-percentage">{{ exam_attempt.percentage_score|floatformat:1 }}%</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="score-card duration-card">
+                                        <div class="score-label">Time Taken</div>
+                                        <div class="score-value">{{ duration_display }}</div>
+                                        <div class="score-percentage">{{ time_efficiency|floatformat:1 }}% efficient</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="score-card status-card">
+                                        <div class="score-label">Status</div>
+                                        <div class="score-value {% if exam_attempt.passed %}text-success{% else %}text-danger{% endif %}">
+                                            {% if exam_attempt.passed %}PASSED{% else %}FAILED{% endif %}
+                                        </div>
+                                        <div class="score-percentage">
+                                            {% if exam_attempt.passed %}
+                                                <i class="fas fa-check-circle text-success"></i> Congratulations!
+                                            {% else %}
+                                                <i class="fas fa-times-circle text-danger"></i> Keep practicing!
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Section-wise Results -->
+                        <div class="section-results-section">
+                            <h3 class="text-white mb-4">
+                                <i class="fas fa-chart-bar me-2"></i>Section-wise Performance
+                            </h3>
+                            
+                            <div class="sections-results">
+                                {% for section_attempt in section_attempts %}
+                                <div class="section-result-card">
+                                    <div class="section-result-header">
+                                        <div class="section-info">
+                                            <h5 class="text-white mb-1">{{ section_attempt.section.display_name }}</h5>
+                                            <small class="text-muted">{{ section_attempt.section.duration_minutes }} minutes allocated</small>
+                                        </div>
+                                        <div class="section-score">
+                                            <div class="section-score-value">
+                                                {{ section_attempt.score|floatformat:1 }}/{{ section_attempt.max_possible_score }}
+                                            </div>
+                                            <div class="section-percentage 
+                                                {% if section_attempt.score >= section_attempt.section.min_pass_score %}text-success{% else %}text-danger{% endif %}">
+                                                {{ section_attempt.percentage|floatformat:1 }}%
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="section-result-body">
+                                        <div class="row">
+                                            <div class="col-md-8">
+                                                <div class="progress-container">
+                                                    <div class="progress">
+                                                        <div class="progress-bar 
+                                                            {% if section_attempt.score >= section_attempt.section.min_pass_score %}bg-success{% else %}bg-danger{% endif %}" 
+                                                            style="width: {{ section_attempt.percentage }}%">
+                                                        </div>
+                                                    </div>
+                                                    <div class="progress-labels">
+                                                        <span>0</span>
+                                                        <span class="text-muted">Pass: {{ section_attempt.section.min_pass_score }}</span>
+                                                        <span>{{ section_attempt.max_possible_score }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="section-stats">
+                                                    <div class="stat-item">
+                                                        <span class="stat-label">Correct:</span>
+                                                        <span class="stat-value text-success">{{ section_attempt.questions_correct }}</span>
+                                                    </div>
+                                                    <div class="stat-item">
+                                                        <span class="stat-label">Answered:</span>
+                                                        <span class="stat-value">{{ section_attempt.questions_answered }}</span>
+                                                    </div>
+                                                    <div class="stat-item">
+                                                        <span class="stat-label">Status:</span>
+                                                        <span class="stat-value 
+                                                            {% if section_attempt.score >= section_attempt.section.min_pass_score %}text-success{% else %}text-danger{% endif %}">
+                                                            {% if section_attempt.score >= section_attempt.section.min_pass_score %}PASS{% else %}FAIL{% endif %}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Performance Analysis -->
+                        <div class="analysis-section mt-5">
+                            <h3 class="text-white mb-4">
+                                <i class="fas fa-analytics me-2"></i>Performance Analysis
+                            </h3>
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="analysis-card">
+                                        <h5 class="text-danger mb-3">Strengths</h5>
+                                        <ul class="analysis-list">
+                                            {% for strength in strengths %}
+                                            <li class="text-success">
+                                                <i class="fas fa-check me-2"></i>{{ strength }}
+                                            </li>
+                                            {% empty %}
+                                            <li class="text-muted">
+                                                <i class="fas fa-info me-2"></i>Continue practicing to identify strengths
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class="analysis-card">
+                                        <h5 class="text-danger mb-3">Areas for Improvement</h5>
+                                        <ul class="analysis-list">
+                                            {% for weakness in weaknesses %}
+                                            <li class="text-warning">
+                                                <i class="fas fa-exclamation-triangle me-2"></i>{{ weakness }}
+                                            </li>
+                                            {% empty %}
+                                            <li class="text-muted">
+                                                <i class="fas fa-info me-2"></i>Great job! Keep up the good work
+                                            </li>
+                                            {% endfor %}
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="results-actions text-center mt-5">
+                            <div class="action-buttons">
+                                <a href="{% url 'exams:exam_list' %}" class="btn btn-danger btn-lg me-3">
+                                    <i class="fas fa-redo me-2"></i>Take Another Exam
+                                </a>
+                                <a href="{% url 'accounts:profile' %}" class="btn btn-outline-light btn-lg me-3">
+                                    <i class="fas fa-user me-2"></i>View Profile
+                                </a>
+                                <button type="button" class="btn btn-outline-light btn-lg" onclick="window.print()">
+                                    <i class="fas fa-print me-2"></i>Print Results
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<style>
+.results-section {
+    background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
+    min-height: 100vh;
+}
+
+.results-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+}
+
+.results-header {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2rem;
+    border-bottom: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.result-icon {
+    font-size: 4rem;
+}
+
+.results-content {
+    padding: 2rem;
+}
+
+.score-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 1.5rem;
+    text-align: center;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    height: 100%;
+}
+
+.total-score {
+    border-left: 4px solid var(--secondary-color);
+}
+
+.duration-card {
+    border-left: 4px solid #17a2b8;
+}
+
+.status-card {
+    border-left: 4px solid #28a745;
+}
+
+.score-label {
+    color: var(--light-text);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+
+.score-value {
+    color: var(--secondary-color);
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.score-percentage {
+    color: var(--light-text);
+    font-size: 0.9rem;
+}
+
+.section-result-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.section-result-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.section-score-value {
+    color: var(--secondary-color);
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.section-percentage {
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.progress-container {
+    position: relative;
+}
+
+.progress {
+    height: 20px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+}
+
+.progress-labels {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--light-text);
+}
+
+.section-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-label {
+    color: var(--light-text);
+    font-size: 0.9rem;
+}
+
+.stat-value {
+    font-weight: bold;
+}
+
+.analysis-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 1.5rem;
+    height: 100%;
+}
+
+.analysis-list {
+    list-style: none;
+    padding: 0;
+}
+
+.analysis-list li {
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+}
+
+.action-buttons .btn {
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .section-result-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .action-buttons .btn {
+        display: block;
+        width: 100%;
+    }
+}
+
+@media print {
+    .results-actions {
+        display: none;
+    }
+    
+    .results-section {
+        background: white !important;
+        color: black !important;
+    }
+    
+    .results-card {
+        background: white !important;
+        border: 1px solid #ccc !important;
+    }
+}
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}

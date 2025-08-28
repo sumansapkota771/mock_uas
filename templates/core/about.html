@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+
+{% block title %}About - UAS Mock Exam System{% endblock %}
+
+{% block content %}
+<div class="about-section py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="about-card">
+                    <div class="about-header text-center">
+                        <h1 class="text-white mb-3">About UAS Mock Exam System</h1>
+                        <p class="text-muted lead">Your comprehensive preparation platform for International UAS entrance examinations</p>
+                    </div>
+                    
+                    <div class="about-content">
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="content-section">
+                                    <h3 class="text-danger mb-3">What is the International UAS Exam?</h3>
+                                    <p class="text-light">
+                                        The International UAS Exam is a joint digital entrance exam of the Finnish Universities of Applied Sciences (UAS), 
+                                        used for selecting students to study programmes leading to a bachelor's degree and conducted in English. 
+                                        The entrance exam is completed by the applicant's own computer remotely online.
+                                    </p>
+                                </div>
+
+                                <div class="content-section">
+                                    <h3 class="text-danger mb-3">Exam Structure</h3>
+                                    <p class="text-light mb-3">The exam consists of 6 main sections:</p>
+                                    <div class="exam-sections">
+                                        <div class="section-item">
+                                            <div class="section-name">Reasoning Skills</div>
+                                            <div class="section-details">25 minutes • Logical reasoning and problem-solving</div>
+                                        </div>
+                                        <div class="section-item">
+                                            <div class="section-name">English Language Skills</div>
+                                            <div class="section-details">20 minutes • Reading comprehension and language skills</div>
+                                        </div>
+                                        <div class="section-item">
+                                            <div class="section-name">Mathematical Skills</div>
+                                            <div class="section-details">25 minutes • Basic mathematics and calculations</div>
+                                        </div>
+                                        <div class="section-item">
+                                            <div class="section-name">Advanced Mathematical Skills</div>
+                                            <div class="section-details">30 minutes • Advanced math and physics (Technology field)</div>
+                                        </div>
+                                        <div class="section-item">
+                                            <div class="section-name">Ethical Skills</div>
+                                            <div class="section-details">10 minutes • Ethical reasoning and decision-making</div>
+                                        </div>
+                                        <div class="section-item">
+                                            <div class="section-name">Emotional Intelligence</div>
+                                            <div class="section-details">10 minutes • Understanding and managing emotions</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="content-section">
+                                    <h3 class="text-danger mb-3">How Our System Helps</h3>
+                                    <ul class="help-list">
+                                        <li><strong>Realistic Practice:</strong> Experience the actual exam format and timing</li>
+                                        <li><strong>Comprehensive Coverage:</strong> All 6 sections with field-specific questions</li>
+                                        <li><strong>Negative Marking:</strong> Practice with the same scoring system as the real exam</li>
+                                        <li><strong>Auto-save Feature:</strong> Your progress is automatically saved every 30 seconds</li>
+                                        <li><strong>Detailed Results:</strong> Section-wise performance analysis and feedback</li>
+                                        <li><strong>Flexible Practice:</strong> Take sections in any order, just like the real exam</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-4">
+                                <div class="sidebar-card">
+                                    <h4 class="text-white mb-3">Quick Facts</h4>
+                                    <div class="fact-list">
+                                        <div class="fact-item">
+                                            <div class="fact-label">Exam Duration</div>
+                                            <div class="fact-value">120+ minutes</div>
+                                        </div>
+                                        <div class="fact-item">
+                                            <div class="fact-label">Sections</div>
+                                            <div class="fact-value">6 sections</div>
+                                        </div>
+                                        <div class="fact-item">
+                                            <div class="fact-label">Question Types</div>
+                                            <div class="fact-value">Multiple Choice</div>
+                                        </div>
+                                        <div class="fact-item">
+                                            <div class="fact-label">Negative Marking</div>
+                                            <div class="fact-value">-0.25 points</div>
+                                        </div>
+                                        <div class="fact-item">
+                                            <div class="fact-label">Pass Requirement</div>
+                                            <div class="fact-value">All sections</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="sidebar-card">
+                                    <h4 class="text-white mb-3">Study Fields</h4>
+                                    <ul class="field-list">
+                                        <li>Humanities and Education</li>
+                                        <li>Business Administration, BIT</li>
+                                        <li>Natural Resources</li>
+                                        <li>Tourism and Hospitality</li>
+                                        <li>Seafaring</li>
+                                        <li>Social Services, Health Care</li>
+                                        <li>Sports and Exercise</li>
+                                        <li>Beauty Care</li>
+                                        <li>Technology</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="cta-section text-center mt-5">
+                            <h3 class="text-white mb-3">Ready to Start Practicing?</h3>
+                            <p class="text-muted mb-4">Join thousands of students who have successfully prepared for their UAS entrance exam</p>
+                            <div class="cta-buttons">
+                                {% if not user.is_authenticated %}
+                                <a href="{% url 'accounts:signup' %}" class="btn btn-danger btn-lg me-3">
+                                    <i class="fas fa-user-plus me-2"></i>Create Free Account
+                                </a>
+                                <a href="{% url 'accounts:login' %}" class="btn btn-outline-light btn-lg">
+                                    <i class="fas fa-sign-in-alt me-2"></i>Login
+                                </a>
+                                {% else %}
+                                <a href="{% url 'exams:exam_list' %}" class="btn btn-danger btn-lg me-3">
+                                    <i class="fas fa-play me-2"></i>Start Mock Exam
+                                </a>
+                                <a href="{% url 'exams:instructions' %}" class="btn btn-outline-light btn-lg">
+                                    <i class="fas fa-info-circle me-2"></i>View Instructions
+                                </a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<style>
+.about-section {
+    background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%);
+    min-height: 100vh;
+}
+
+.about-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+}
+
+.about-header {
+    background: rgba(220, 53, 69, 0.2);
+    padding: 2rem;
+    border-bottom: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.about-content {
+    padding: 2rem;
+}
+
+.content-section {
+    margin-bottom: 2.5rem;
+}
+
+.content-section p {
+    line-height: 1.6;
+}
+
+.exam-sections {
+    display: grid;
+    gap: 1rem;
+}
+
+.section-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem;
+    border-left: 3px solid var(--secondary-color);
+}
+
+.section-name {
+    color: var(--light-text);
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.section-details {
+    color: var(--secondary-color);
+    font-size: 0.9rem;
+}
+
+.help-list {
+    color: var(--light-text);
+    line-height: 1.8;
+}
+
+.help-list li {
+    margin-bottom: 0.75rem;
+}
+
+.help-list strong {
+    color: var(--secondary-color);
+}
+
+.sidebar-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.fact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.fact-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.fact-item:last-child {
+    border-bottom: none;
+}
+
+.fact-label {
+    color: var(--light-text);
+    font-size: 0.9rem;
+}
+
+.fact-value {
+    color: var(--secondary-color);
+    font-weight: bold;
+}
+
+.field-list {
+    list-style: none;
+    padding: 0;
+    color: var(--light-text);
+}
+
+.field-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.field-list li:before {
+    content: "•";
+    color: var(--secondary-color);
+    position: absolute;
+    left: 0;
+}
+
+.field-list li:last-child {
+    border-bottom: none;
+}
+
+.cta-section {
+    background: rgba(220, 53, 69, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    border-radius: 10px;
+    padding: 2rem;
+}
+
+.cta-buttons .btn {
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .cta-buttons .btn {
+        display: block;
+        width: 100%;
+    }
+}
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}

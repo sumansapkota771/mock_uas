@@ -1,0 +1,211 @@
+
+
+
+
+
+
+
+{% extends 'base.html' %}
+
+{% block title %}Mock Exams - UAS Mock Exam System{% endblock %}
+
+{% block content %}
+<div class="exam-list-section py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <div class="page-header text-center mb-5">
+                    <h1 class="text-dark mb-3">Available Mock Exams</h1>
+                    <p class="text-muted lead">Choose a mock exam to test your knowledge and prepare for the International UAS entrance exam</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            {% for exam in exams %}
+            <div class="col-lg-8 mb-4">
+                <div class="exam-card">
+                    <div class="exam-card-header">
+                        <h3 class="text-dark mb-2">{{ exam.name }}</h3>
+                        <p class="text-muted mb-0">{{ exam.description }}</p>
+                    </div>
+                    
+                    <div class="exam-card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h5 class="text-danger mb-3">Exam Sections</h5>
+                                <div class="sections-grid">
+                                    {% for section in exam.sections.all %}
+                                    <div class="section-item">
+                                        <div class="section-name">{{ section.display_name }}</div>
+                                        <div class="section-duration">{{ section.duration_minutes }} min</div>
+                                        <div class="section-score">Max: {{ section.max_score }} pts</div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4">
+                                <div class="exam-stats">
+                                    <div class="stat-item">
+                                        <div class="stat-label">Total Duration</div>
+                                        <div class="stat-value text-danger">{{ exam.total_duration }} min</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-label">Sections</div>
+                                        <div class="stat-value text-danger">{{ exam.sections.count }}</div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-label">Questions</div>
+                                        <div class="stat-value text-danger">{{ exam.total_questions|default:"TBD" }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="exam-actions mt-4">
+                            <a href="{% url 'exams:instructions' %}?exam={{ exam.id }}" class="btn btn-outline-light me-3">
+                                <i class="fas fa-info-circle me-2"></i>View Instructions
+                            </a>
+                            <a href="{% url 'exams:start_exam' exam.id %}" class="btn btn-danger">
+                                <i class="fas fa-play me-2"></i>Start Mock Exam
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-lg-8">
+                <div class="no-exams-card text-center py-5">
+                    <div class="text-muted mb-4">
+                        <i class="fas fa-clipboard-list fa-4x"></i>
+                    </div>
+                    <h3 class="text-dark mb-3">No Mock Exams Available</h3>
+                    <p class="text-muted mb-4">Mock exams are currently being prepared. Please check back later.</p>
+                    <a href="{% url 'core:home' %}" class="btn btn-outline-light">Return to Home</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<style>
+.exam-list-section {
+    background: #ffffff;
+    min-height: 100vh;
+}
+
+.exam-card {
+    background: #ffffff;
+    border-radius: 15px;
+    border: 1px solid #dee2e6;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.exam-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(220, 53, 69, 0.2);
+}
+
+.exam-card-header {
+    background: rgba(220, 53, 69, 0.1);
+    padding: 1.5rem;
+    border-bottom: 1px solid rgba(220, 53, 69, 0.3);
+}
+
+.exam-card-body {
+    padding: 2rem;
+}
+
+.sections-grid {
+    display: grid;
+    gap: 1rem;
+}
+
+.section-item {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 1rem;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 1rem;
+    align-items: center;
+}
+
+.section-name {
+    color: #333333;
+    font-weight: 600;
+}
+
+.section-duration, .section-score {
+    color: #dc3545;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.exam-stats {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 1.5rem;
+    border: 1px solid #dee2e6;
+}
+
+.stat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.stat-item:last-child {
+    margin-bottom: 0;
+}
+
+.stat-label {
+    color: #333333;
+    font-size: 0.9rem;
+}
+
+.stat-value {
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.exam-actions {
+    border-top: 1px solid #dee2e6;
+    padding-top: 1.5rem;
+}
+
+.no-exams-card {
+    background: #ffffff;
+    border-radius: 15px;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+    .section-item {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    
+    .exam-actions {
+        text-align: center;
+    }
+    
+    .exam-actions .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+</style>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}

@@ -1,0 +1,311 @@
+{% extends 'base.html' %}
+
+{% block title %}Start Exam - UAS Mock Exam System{% endblock %}
+
+{% block content %}
+<div class="start-exam-section">
+    <div class="container">
+        <div class="row justify-content-center align-items-center min-vh-100">
+            <div class="col-lg-8">
+                <div class="start-exam-card">
+                    <div class="start-exam-header text-center">
+                        <div class="exam-icon mb-3">
+                            <i class="fas fa-clipboard-check text-danger"></i>
+                        </div>
+                        <h1 class="text-black mb-2">Ready to Start?</h1>
+                        <h3 class="text-danger mb-3">{{ exam.name }}</h3>
+                        <p class="text-muted">{{ exam.description }}</p>
+                    </div>
+                    
+                    <div class="start-exam-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="exam-overview">
+                                    <h4 class="text-white mb-3">Exam Overview</h4>
+                                    
+                                    <div class="overview-item">
+                                        <div class="overview-icon">
+                                            <i class="fas fa-clock text-danger"></i>
+                                        </div>
+                                        <div class="overview-content">
+                                            <div class="overview-label">Total Duration</div>
+                                            <div class="overview-value">{{ exam.total_duration }} minutes</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="overview-item">
+                                        <div class="overview-icon">
+                                            <i class="fas fa-list text-danger"></i>
+                                        </div>
+                                        <div class="overview-content">
+                                            <div class="overview-label">Sections</div>
+                                            <div class="overview-value">{{ exam.sections.count }} sections</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="overview-item">
+                                        <div class="overview-icon">
+                                            <i class="fas fa-question-circle text-danger"></i>
+                                        </div>
+                                        <div class="overview-content">
+                                            <div class="overview-label">Questions</div>
+                                            <div class="overview-value">{{ total_questions|default:"Multiple" }}</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="overview-item">
+                                        <div class="overview-icon">
+                                            <i class="fas fa-minus-circle text-danger"></i>
+                                        </div>
+                                        <div class="overview-content">
+                                            <div class="overview-label">Negative Marking</div>
+                                            <div class="overview-value">Yes (-0.25 pts)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <div class="sections-preview">
+                                    <h4 class="text-white mb-3">Exam Sections</h4>
+                                    <div class="sections-list">
+                                        {% for section in exam.sections.all %}
+                                        <div class="section-preview-item">
+                                            <div class="section-preview-name">{{ section.display_name }}</div>
+                                            <div class="section-preview-duration">{{ section.duration_minutes }} min</div>
+                                        </div>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Important Reminders -->
+                        <div class="reminders-section mt-4">
+                            <h4 class="text-danger mb-3">
+                                <i class="fas fa-exclamation-triangle me-2"></i>Important Reminders
+                            </h4>
+                            <div class="reminders-grid">
+                                <div class="reminder-item">
+                                    <i class="fas fa-wifi text-danger"></i>
+                                    <span>Ensure stable internet connection</span>
+                                </div>
+                                <div class="reminder-item">
+                                    <i class="fas fa-volume-mute text-danger"></i>
+                                    <span>Find a quiet environment</span>
+                                </div>
+                                <div class="reminder-item">
+                                    <i class="fas fa-battery-full text-danger"></i>
+                                    <span>Check device battery/power</span>
+                                </div>
+                                <div class="reminder-item">
+                                    <i class="fas fa-window-close text-danger"></i>
+                                    <span>Close other applications</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Final Confirmation -->
+                        <div class="confirmation-section mt-4">
+                            <div class="confirmation-box">
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" id="finalConfirm" required>
+                                    <label class="form-check-label text-black" for="finalConfirm">
+                                        I confirm that I am ready to start the exam and understand that once started, 
+                                        the timer will begin and I cannot pause the exam.
+                                    </label>
+                                </div>
+                                
+                                <div class="confirmation-actions text-center">
+                                    <a href="{% url 'exams:exam_list' %}" class="btn btn-outline-light me-3">
+                                        <i class="fas fa-arrow-left me-2"></i>Cancel
+                                    </a>
+                                    <button type="button" class="btn btn-danger btn-lg" id="beginExamBtn" disabled>
+                                        <i class="fas fa-play me-2"></i>Begin Exam Now
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<style>
+.start-exam-section {
+    background: linear-gradient(135deg, #ffffff 0%, #ffffff 100%);
+    min-height: 100vh;
+}
+
+.start-exam-card {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+}
+
+.start-exam-header {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 2rem;
+    border-bottom: 1px solid rgba(220, 53, 69, 0.3);
+}
+ 
+.exam-icon {
+    font-size: 4rem;
+}
+
+.start-exam-body {
+    padding: 2rem;
+}
+
+.exam-overview, .sections-preview {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 1.5rem;
+    height: 100%;
+}
+
+.overview-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.overview-icon {
+    width: 40px;
+    text-align: center;
+    margin-right: 1rem;
+}
+
+.overview-content {
+    flex: 1;
+}
+
+.overview-label {
+    color: var(--light-text);
+    font-size: 0.9rem;
+}
+
+.overview-value {
+    color: var(--secondary-color);
+    font-weight: bold;
+}
+
+.sections-list {
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.section-preview-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    margin-bottom: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border-left: 3px solid var(--secondary-color);
+}
+
+.section-preview-name {
+    color: var(--light-text);
+    font-weight: 500;
+}
+
+.section-preview-duration {
+    color: var(--secondary-color);
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.reminders-section {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 10px;
+    padding: 1.5rem;
+}
+
+.reminders-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.reminder-item {
+    display: flex;
+    align-items: center;
+    color: var(--light-text);
+    font-size: 0.9rem;
+}
+
+.reminder-item i {
+    margin-right: 0.75rem;
+    width: 20px;
+}
+
+.confirmation-section {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(220, 53, 69, 0.3);
+    border-radius: 10px;
+    padding: 1.5rem;
+}
+
+.confirmation-box {
+    text-align: center;
+}
+
+.form-check-input:checked {
+    background-color: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+@media (max-width: 768px) {
+    .reminders-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .confirmation-actions .btn {
+        display: block;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const confirmCheckbox = document.getElementById('finalConfirm');
+    const beginExamBtn = document.getElementById('beginExamBtn');
+    
+    confirmCheckbox.addEventListener('change', function() {
+        beginExamBtn.disabled = !this.checked;
+    });
+    
+    beginExamBtn.addEventListener('click', function() {
+        if (confirmCheckbox.checked) {
+            // Show loading state
+            this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Starting Exam...';
+            this.disabled = true;
+            
+            // Redirect to exam interface
+            setTimeout(() => {
+                window.location.href = '{% url "exams:take_exam" exam.id %}';
+            }, 1500);
+        }
+    });
+});
+</script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
